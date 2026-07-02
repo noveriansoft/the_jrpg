@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -8,19 +9,30 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
 
     public bool isMoving;
+    public bool canMove = true;
     private Vector3 targetPosition;
 
     private float lastMoveX = 0;
     private float lastMoveY = -1;
 
-    void Start()
+    void Awake()
     {
         animator = GetComponent<Animator>();
-        targetPosition = transform.position;
+        Debug.Log(animator);
+    }
+
+    void Start()
+    {
+        targetPosition = transform.position;      
     }
 
     void Update()
     {
+        if (!canMove)
+        {
+            return;
+        }
+
         if (!isMoving)
         {
             HandleInput();
@@ -83,4 +95,54 @@ public class PlayerMovement : MonoBehaviour
             isMoving = false;
         }
     }
+
+    public void EnableMovement()
+    {
+        canMove = true;
+        Debug.Log("Player movement enabled.");
+    }
+
+    public void DisableMovement()
+    {
+        canMove = false;
+        Debug.Log("Player movement disabled.");
+    }
+
+    #region playerMoveCutscene
+    public IEnumerator MoveDownCutscene(float distance)
+    {
+        canMove = false;
+        SetFacing(0, -1);
+
+        isMoving = true;
+
+        animator.SetBool("IsMoving", true);
+
+        Vector3 target = transform.position + Vector3.down * distance;
+
+        while (Vector3.Distance(transform.position, target) > 0.01f)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                target,
+                moveSpeed * Time.deltaTime);
+
+            yield return null;
+        }
+
+        transform.position = target;
+
+        isMoving = false;
+        animator.SetBool("IsMoving", false);
+    }
+
+    private void SetFacing(float x, float y)
+    {
+        lastMoveX = x;
+        lastMoveY = y;
+
+        animator.SetFloat("MoveX", x);
+        animator.SetFloat("MoveY", y);
+    }
+    #endregion
 }
