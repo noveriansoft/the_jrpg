@@ -1,15 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
+    [Header("Enemy Asset")]
     public Image enemyImage;
     public TMP_Text hpText;
 
     private EnemyData enemy;
     private int currentHP;
 
+    [Header("BG Asset")]
     public Image backgroundImage;
     public Sprite forestBG;
     public Sprite dungeonBG;
@@ -28,11 +31,8 @@ public class BattleManager : MonoBehaviour
         }
 
         enemy = BattleData.CurrentEnemy;
-
         currentHP = enemy.maxHP;
-
         enemyImage.sprite = enemy.battleSprite;
-
         UpdateUI();
     }
 
@@ -61,11 +61,26 @@ public class BattleManager : MonoBehaviour
 
     public void Run()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("WorldScene");
+        //UnityEngine.SceneManagement.SceneManager.LoadScene("WorldScene");
+        BattleData.CurrentEnemyWorld.StartCooldown();
+        ExitBattle();
     }
 
     void WinBattle()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("WorldScene");
+        //Destroy current enemy object
+        Destroy(BattleData.CurrentEnemyWorld.gameObject);
+
+        //UnityEngine.SceneManagement.SceneManager.LoadScene("WorldScene");
+        ExitBattle();
+    }
+
+    void ExitBattle()
+    {
+        PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
+
+        player.EnableMovement();
+
+        SceneManager.UnloadSceneAsync("BattleScene");
     }
 }

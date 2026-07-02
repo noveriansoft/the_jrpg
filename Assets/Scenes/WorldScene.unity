@@ -2605,7 +2605,7 @@ Transform:
   m_GameObject: {fileID: 965094822}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.53, y: 0.61, z: 0}
+  m_LocalPosition: {x: 0.53, y: 2.6100001, z: 0}
   m_LocalScale: {x: 1.4, y: 1.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3036,7 +3036,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 1
   indentLevel: 0
-  storyText: Mom said i have to kill 5 slimes...
+  storyText: tes
   description: 
   character: {fileID: 0}
   portrait: {fileID: 0}
