@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SlimeData
   m_EditorClassIdentifier: 
   enemyName: Slime
-  maxHP: 10
+  maxHP: 15
   attack: 2
   battleSprite: {fileID: 21300000, guid: 6c67a0dcaeae1ce40b601238b69fad3f, type: 3}
