@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             BattleData.CurrentPlayer = playerData;
+            BattleData.PlayerCurrentHP = BattleData.CurrentPlayer.maxHP;
         }
         else
         {

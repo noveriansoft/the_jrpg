@@ -115,11 +115,9 @@ public class PlayerMovement : MonoBehaviour
         SetFacing(0, -1);
 
         isMoving = true;
-
         animator.SetBool("IsMoving", true);
 
         Vector3 target = transform.position + Vector3.down * distance;
-
         while (Vector3.Distance(transform.position, target) > 0.01f)
         {
             transform.position = Vector3.MoveTowards(
@@ -131,7 +129,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         transform.position = target;
-
         isMoving = false;
         animator.SetBool("IsMoving", false);
     }

@@ -6,24 +6,34 @@ using System.Collections;
 
 public class BattleManager : MonoBehaviour
 {
-    [Header("Enemy Asset")]
+    [Header("Enemy UI")]
     public Image enemyImage;
-    public TMP_Text hpText;
+    public TMP_Text enemyHpText;
+    public Slider enemyHpBar;
 
     private EnemyData enemy;
     private int currentHP;
 
-    [Header("Player Stats")]
-    private int playerMaxHP = 20;
+    [Header("Player Stats UI")]    
+    public TMP_Text playerHpText;
+    public Slider playerHpBar;
 
     private PlayerData player;
     private int playerCurrentHP;
 
-    [Header("BG Asset")]
+    [Header("BG UI")]
     public Image backgroundImage;
+
+    [Header("BG Asset")]
     public Sprite forestBG;
     public Sprite dungeonBG;
+
+    [Header("TXT UI")]
     public TMP_Text battleLogText;
+    [SerializeField] private float typeSpeed = 0.03f;
+
+    [Header("Script")]
+    public BattleMenu battleMenu;
 
     private bool playerTurn = true;
 
@@ -40,45 +50,62 @@ public class BattleManager : MonoBehaviour
                 break;
         }
 
+        #region Player & Enemy Data Load
         //Enemy data
         enemy = BattleData.CurrentEnemy;
         currentHP = enemy.maxHP;
         enemyImage.sprite = enemy.battleSprite;
+        enemyHpBar.maxValue = enemy.maxHP;
+        enemyHpBar.value = currentHP;
 
         //Player data
         player = BattleData.CurrentPlayer;
-        playerCurrentHP = player.maxHP;
+        //playerCurrentHP = player.maxHP;
+        playerCurrentHP = BattleData.PlayerCurrentHP;
+        playerHpBar.maxValue = player.maxHP;
+        playerHpBar.value = playerCurrentHP;
+        #endregion
 
         UpdateUI();
-
-        SetBattleLog(
-            "A wild " +
-            enemy.enemyName +
-            " appeared!"
-        );
+        StartCoroutine(TypeBattleLog("A wild " + enemy.enemyName + " appeared!",OnIntroFinished));
     }
 
     void UpdateUI()
     {
-        hpText.text =
-            enemy.enemyName +
-            "\nEnemy HP: " +
-            currentHP +
-            "/" +
-            enemy.maxHP +
-            "\n\nPlayer HP: " +
-            playerCurrentHP +
-            "/" +
-            player.maxHP;
+        enemyHpText.text = enemy.enemyName + "\nHP: " + currentHP + "/" + enemy.maxHP;
+        enemyHpBar.value = currentHP;
+
+        playerHpText.text = player.playerName + "\nHP: " + playerCurrentHP + "/" + player.maxHP;     
+        playerHpBar.value = playerCurrentHP;
 
         Debug.Log("Player HP: " + playerCurrentHP);
         Debug.Log("Enemy HP: " + currentHP);
     }
 
+    #region Battle Log
     void SetBattleLog(string message)
     {
         battleLogText.text = message;
     }
+
+    IEnumerator TypeBattleLog(string message, System.Action onComplete = null)
+    {
+        battleLogText.text = "";
+
+        foreach (char letter in message)
+        {
+            battleLogText.text += letter;
+            yield return new WaitForSeconds(typeSpeed);
+        }
+
+        onComplete?.Invoke();
+    }
+
+    void OnIntroFinished()
+    {
+        battleMenu.enableButton();
+    }
+    #endregion
 
     #region Battle Functions
     public void Attack()
@@ -92,16 +119,7 @@ public class BattleManager : MonoBehaviour
 
         currentHP -= damage;
 
-        SetBattleLog(
-            player.playerName + 
-            " attacked " +
-            enemy.enemyName +
-            "!\n" +
-            enemy.enemyName +
-            " lost " +
-            damage +
-            " HP!"
-        );
+        SetBattleLog(player.playerName + " attacked " + enemy.enemyName + "!\n" + enemy.enemyName + " lost " + damage + " HP!");
 
         //Enemies hp 0 is win baby
         if (currentHP <= 0)
@@ -132,11 +150,11 @@ public class BattleManager : MonoBehaviour
         Debug.Log("Player Win!");
         Debug.Log("Enemy HP when win = " + currentHP);
 
-        //Destroy current enemy object
-        Destroy(BattleData.CurrentEnemyWorld.gameObject);
+        playerTurn = false;
+        battleMenu.attackButton.interactable = false;
+        battleMenu.runButton.interactable = false;
 
-        //UnityEngine.SceneManagement.SceneManager.LoadScene("WorldScene");
-        ExitBattle();
+        StartCoroutine(WinBattleSequence());
     }
 
     void ExitBattle()
@@ -160,36 +178,55 @@ public class BattleManager : MonoBehaviour
         Debug.Log("Enemies Attacking!");
 
         int damage = enemy.attack;
-
         playerCurrentHP -= damage;
-
-        SetBattleLog(
-            enemy.enemyName +
-            " attacked " + 
-            player.playerName + "!\n" +
-            player.playerName + " lost " +
-            damage +
-            " HP!"
-        );
+        BattleData.PlayerCurrentHP = playerCurrentHP; //Save player hp data
+        SetBattleLog(enemy.enemyName + " attacked " + player.playerName + "!\n" + player.playerName + " lost " + damage + " HP!");
 
         if (playerCurrentHP <= 0)
         {
             playerCurrentHP = 0;
-
             UpdateUI();
-
             LoseBattle();
             return;
         }
 
         UpdateUI();
-
         playerTurn = true;
     }
 
     void LoseBattle()
     {
         Debug.Log("Player Defeated");
+        ExitBattle();
+    }
+
+    IEnumerator WinBattleSequence()
+    {
+        Color color = enemyImage.color;
+
+        while (color.a > 0)
+        {
+            color.a -= Time.deltaTime * 2f;
+            enemyImage.color = color;
+
+            yield return null;
+        }
+
+        StartCoroutine(
+            TypeBattleLog(
+                enemy.enemyName + " defeated!\n" +
+                player.playerName + " wins!"
+            )
+        );
+
+        float textDuration =
+            (enemy.enemyName + " defeated!\n" +
+            player.playerName + " wins!").Length
+            * typeSpeed;
+
+        yield return new WaitForSeconds(textDuration + 1f);
+
+        Destroy(BattleData.CurrentEnemyWorld.gameObject);
 
         ExitBattle();
     }

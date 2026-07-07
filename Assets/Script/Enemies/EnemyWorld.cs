@@ -42,7 +42,6 @@ public class EnemyWorld : MonoBehaviour
     private IEnumerator CooldownRoutine()
     {
         cooldown = true;
-
         yield return new WaitForSeconds(2f);
 
         cooldown = false;
