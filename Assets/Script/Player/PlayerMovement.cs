@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float lastMoveX = 0;
     private float lastMoveY = -1;
+    public float LastMoveX => lastMoveX;
+    public float LastMoveY => lastMoveY;
 
     void Awake()
     {
