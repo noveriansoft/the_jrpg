@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 6178821}
   - component: {fileID: 6178824}
   - component: {fileID: 6178825}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: NPC_Knight
   m_TagString: NPC
   m_Icon: {fileID: 0}
@@ -265,7 +265,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.08339986, y: -0.101580665}
+  m_Offset: {x: -0.0151770115, y: -0.1290202}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -275,7 +275,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.41679972, y: 0.3054078}
+  m_Size: {x: 0.5841464, y: 0.5792707}
   m_EdgeRadius: 0
 --- !u!114 &6178825
 MonoBehaviour:
@@ -2358,7 +2358,8 @@ MonoBehaviour:
   nameText: Wichita
   nameColor: {r: 1, g: 0.2783019, b: 0.60282844, a: 1}
   soundEffect: {fileID: 0}
-  portraits: []
+  portraits:
+  - {fileID: 21300000, guid: 865c7151533515247990184c3c882ee3, type: 3}
   portraitsFace: 0
   setSayDialog: {fileID: 0}
   description: 
@@ -2724,63 +2725,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &971708482
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2530832445504835558, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_Name
-      value: Enemy_Slime
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.53
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.6100001
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: fee11918caea18e40b467765956b693f, type: 3}
 --- !u!1 &1298789854
 GameObject:
   m_ObjectHideFlags: 0
@@ -2792,8 +2736,9 @@ GameObject:
   - component: {fileID: 1298789855}
   - component: {fileID: 1298789856}
   - component: {fileID: 1298789857}
+  - component: {fileID: 1298789858}
   m_Layer: 0
-  m_Name: Gameplay
+  m_Name: Gameplay Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2842,6 +2787,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerData: {fileID: 11400000, guid: 84818671556df3346a819262b84ca0ac, type: 2}
+--- !u!114 &1298789858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1298789854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a76d86386f3ec74aae7f923dec27ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1320004860
 GameObject:
   m_ObjectHideFlags: 0
@@ -2999,6 +2956,9 @@ MonoBehaviour:
   tileSize: 1
   isMoving: 0
   canMove: 0
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 192
 --- !u!61 &1320004866
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3071,7 +3031,7 @@ GameObject:
   - component: {fileID: 1488648557}
   - component: {fileID: 1488648556}
   - component: {fileID: 1488648555}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3991,6 +3951,12 @@ GameObject:
   - component: {fileID: 1975021176}
   - component: {fileID: 1975021177}
   - component: {fileID: 1975021178}
+  - component: {fileID: 1975021179}
+  - component: {fileID: 1975021180}
+  - component: {fileID: 1975021181}
+  - component: {fileID: 1975021182}
+  - component: {fileID: 1975021184}
+  - component: {fileID: 1975021183}
   m_Layer: 0
   m_Name: Fungus
   m_TagString: Untagged
@@ -4011,7 +3977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 202.51001, y: 216.5}
+  scrollPos: {x: 258.01, y: 216.5}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 356
@@ -4025,7 +3991,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 1975021177}
   selectedCommands:
-  - {fileID: 1975021178}
+  - {fileID: 1975021179}
   variables: []
   description: 
   stepPause: 0
@@ -4052,7 +4018,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 67
-    y: 70
+    y: 69
     width: 75.979996
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -4062,8 +4028,10 @@ MonoBehaviour:
   description: 
   eventHandler: {fileID: 0}
   commandList:
+  - {fileID: 1975021181}
   - {fileID: 1975021175}
   - {fileID: 1975021176}
+  - {fileID: 1975021182}
   suppressAllAutoSelections: 0
 --- !u!4 &1975021174
 Transform:
@@ -4096,10 +4064,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 1
   indentLevel: 0
-  storyText: tes
+  storyText: a
   description: 
   character: {fileID: 141191850}
-  portrait: {fileID: 0}
+  portrait: {fileID: 21300000, guid: 865c7151533515247990184c3c882ee3, type: 3}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -4151,7 +4119,11 @@ MonoBehaviour:
   description: 
   eventHandler: {fileID: 0}
   commandList:
+  - {fileID: 1975021179}
+  - {fileID: 1975021184}
   - {fileID: 1975021178}
+  - {fileID: 1975021180}
+  - {fileID: 1975021183}
   suppressAllAutoSelections: 0
 --- !u!114 &1975021178
 MonoBehaviour:
@@ -4180,6 +4152,108 @@ MonoBehaviour:
   stopVoiceover: 1
   waitForVO: 0
   setSayDialog: {fileID: 0}
+--- !u!114 &1975021179
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975021170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a200dbd67304446a3019434503338a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 6
+  indentLevel: 0
+  targetObject: {fileID: 1298789854}
+  methodName: StopAllEnemies
+  delay: 0
+--- !u!114 &1975021180
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975021170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a200dbd67304446a3019434503338a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 7
+  indentLevel: 0
+  targetObject: {fileID: 1320004860}
+  methodName: EnableMovement
+  delay: 0
+--- !u!114 &1975021181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975021170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a200dbd67304446a3019434503338a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 8
+  indentLevel: 0
+  targetObject: {fileID: 1298789854}
+  methodName: StopAllEnemies
+  delay: 0
+--- !u!114 &1975021182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975021170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a200dbd67304446a3019434503338a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 9
+  indentLevel: 0
+  targetObject: {fileID: 1298789854}
+  methodName: ResumeAllEnemies
+  delay: 0
+--- !u!114 &1975021183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975021170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a200dbd67304446a3019434503338a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 11
+  indentLevel: 0
+  targetObject: {fileID: 1298789854}
+  methodName: ResumeAllEnemies
+  delay: 0
+--- !u!114 &1975021184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975021170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a200dbd67304446a3019434503338a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 10
+  indentLevel: 0
+  targetObject: {fileID: 1320004860}
+  methodName: DisableMovement
+  delay: 0
 --- !u!1 &2078780465
 GameObject:
   m_ObjectHideFlags: 0
@@ -4244,7 +4318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.6100001
+      value: -4.39
       objectReference: {fileID: 0}
     - target: {fileID: 6518656735516426706, guid: fee11918caea18e40b467765956b693f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4296,5 +4370,4 @@ SceneRoots:
   - {fileID: 915344909}
   - {fileID: 450794306}
   - {fileID: 6780174956864844485}
-  - {fileID: 971708482}
   - {fileID: 6178823}

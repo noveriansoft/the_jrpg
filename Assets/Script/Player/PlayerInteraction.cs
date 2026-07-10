@@ -15,7 +15,6 @@ public class PlayerInteraction : MonoBehaviour
         if (Input.GetButtonDown("Submit"))
         {
             Interact();
-            Debug.Log("Start Talk");
         }
     }
 
@@ -34,6 +33,7 @@ public class PlayerInteraction : MonoBehaviour
             if (npc != null)
             {
                 npc.Talk();
+                Debug.Log("Start Talk");
             }
         }
     }

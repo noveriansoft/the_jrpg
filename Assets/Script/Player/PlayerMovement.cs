@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Player Setting")]
     public float moveSpeed = 4f;
     public float tileSize = 1f;
 
@@ -16,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
     private float lastMoveY = -1;
     public float LastMoveX => lastMoveX;
     public float LastMoveY => lastMoveY;
+
+    [Header("Layer Setting")]
+    public LayerMask obstacleLayer;
 
     void Awake()
     {
@@ -55,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        // Cegah diagonal
+        //jgn jalan diagonal
         if (Mathf.Abs(horizontal) > 0)
         {
             moveX = (int)Mathf.Sign(horizontal);
@@ -70,13 +74,14 @@ public class PlayerMovement : MonoBehaviour
             lastMoveX = moveX;
             lastMoveY = moveY;
 
-            targetPosition = transform.position +
-                             new Vector3(
-                                 moveX * tileSize,
-                                 moveY * tileSize,
-                                 0);
+            Vector2 direction = new Vector2(moveX, moveY);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position,direction,tileSize,obstacleLayer);
 
-            isMoving = true;
+            if (hit.collider == null)
+            {
+                targetPosition = transform.position + new Vector3(moveX * tileSize,moveY * tileSize,0);
+                isMoving = true;
+            }
         }
     }
 
@@ -85,11 +90,7 @@ public class PlayerMovement : MonoBehaviour
         if (!isMoving)
             return;
 
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            targetPosition,
-            moveSpeed * Time.deltaTime
-        );
+        transform.position = Vector3.MoveTowards(transform.position,targetPosition,moveSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
         {
@@ -122,11 +123,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 target = transform.position + Vector3.down * distance;
         while (Vector3.Distance(transform.position, target) > 0.01f)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                target,
-                moveSpeed * Time.deltaTime);
-
+            transform.position = Vector3.MoveTowards(transform.position,target,moveSpeed * Time.deltaTime);
             yield return null;
         }
 

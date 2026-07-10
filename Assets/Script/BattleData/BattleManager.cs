@@ -35,10 +35,17 @@ public class BattleManager : MonoBehaviour
     [Header("Script")]
     public BattleMenu battleMenu;
 
+    [Header("Attack Effect")]
+    public GameObject attackEffect;
+    public Animator attackAnimator;
+
     private bool playerTurn = true;
 
     void Start()
     {
+        EnemyManager.Instance.StopAllEnemies();
+        attackEffect.SetActive(false);
+
         switch (BattleData.CurrentBattleArea)
         {
             case BattleArea.Forest:
@@ -75,7 +82,7 @@ public class BattleManager : MonoBehaviour
         enemyHpText.text = enemy.enemyName + "\nHP: " + currentHP + "/" + enemy.maxHP;
         enemyHpBar.value = currentHP;
 
-        playerHpText.text = player.playerName + "\nHP: " + playerCurrentHP + "/" + player.maxHP;     
+        playerHpText.text = playerCurrentHP + "/" + player.maxHP; //player.playerName; + "\nHP: " + playerCurrentHP + "/" + player.maxHP;     
         playerHpBar.value = playerCurrentHP;
 
         Debug.Log("Player HP: " + playerCurrentHP);
@@ -113,28 +120,56 @@ public class BattleManager : MonoBehaviour
         if (!playerTurn)
             return;
 
-        Debug.Log("Player Attacking!");
+        playerTurn = false;
+        StartCoroutine(PlayerAttackSequence());
 
+        #region backup
+        //Debug.Log("Player Attacking!");
+
+        //int damage = player.attack;
+        //currentHP -= damage;
+        //SetBattleLog(player.playerName + " attacked " + enemy.enemyName + "!\n" + enemy.enemyName + " lost " + damage + " HP!");
+
+        ////Enemies hp 0 is win baby
+        //if (currentHP <= 0)
+        //{
+        //    currentHP = 0;
+        //    UpdateUI();
+
+        //    WinBattle();
+        //    return;
+        //}
+
+        //UpdateUI();
+
+        //playerTurn = false;
+
+        //StartCoroutine(EnemyTurn());
+        #endregion
+    }
+
+    IEnumerator PlayerAttackSequence()
+    {
+        attackEffect.SetActive(true);
+        attackAnimator.Play("Attack");
+
+        yield return new WaitForSeconds(0.5f);
+
+        attackEffect.SetActive(false);
         int damage = player.attack;
-
         currentHP -= damage;
-
         SetBattleLog(player.playerName + " attacked " + enemy.enemyName + "!\n" + enemy.enemyName + " lost " + damage + " HP!");
 
-        //Enemies hp 0 is win baby
         if (currentHP <= 0)
         {
             currentHP = 0;
             UpdateUI();
 
             WinBattle();
-            return;
+            yield break;
         }
 
         UpdateUI();
-
-        playerTurn = false;
-
         StartCoroutine(EnemyTurn());
     }
 
@@ -164,6 +199,8 @@ public class BattleManager : MonoBehaviour
         player.EnableMovement();
 
         SceneManager.UnloadSceneAsync("BattleScene");
+
+        EnemyManager.Instance.ResumeAllEnemies();
     }
 
     IEnumerator EnemyTurn()
