@@ -8923,8 +8923,10 @@ MonoBehaviour:
     y: -340
     width: 1114
     height: 859
-  selectedBlocks: []
-  selectedCommands: []
+  selectedBlocks:
+  - {fileID: 1975021172}
+  selectedCommands:
+  - {fileID: 1975021175}
   variables: []
   description: 
   stepPause: 0
@@ -8999,7 +9001,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 1
   indentLevel: 0
-  storyText: a
+  storyText: Finally, i get out from this cave, i have to get home....
   description: 
   character: {fileID: 141191850}
   portrait: {fileID: 21300000, guid: 865c7151533515247990184c3c882ee3, type: 3}
