@@ -20,18 +20,38 @@ public class EnemyWorld : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        Debug.Log("Battle start: " + enemyData.enemyName);
+        StartCoroutine(StartBattle(other));
+
+        #region backup
+        //Debug.Log("Battle start: " + enemyData.enemyName);
+        //battleStarted = true;
+        //BattleData.CurrentEnemy = enemyData;
+        //BattleData.CurrentBattleArea = battleArea;
+        //BattleData.CurrentEnemyWorld = this;
+
+        ////SceneManager.LoadScene("BattleScene");
+        //SceneManager.LoadScene("BattleScene", LoadSceneMode.Additive);
+
+        //PlayerMovement player =
+        //other.GetComponent<PlayerMovement>();
+        //player.DisableMovement();
+        #endregion
+    }
+
+    IEnumerator StartBattle(Collider2D other)
+    {
         battleStarted = true;
+
+        PlayerMovement player = other.GetComponent<PlayerMovement>();
+        player.DisableMovement();
+
+        Debug.Log("Battle start: " + enemyData.enemyName);
         BattleData.CurrentEnemy = enemyData;
         BattleData.CurrentBattleArea = battleArea;
         BattleData.CurrentEnemyWorld = this;
 
-        //SceneManager.LoadScene("BattleScene");
-        SceneManager.LoadScene("BattleScene", LoadSceneMode.Additive);
-
-        PlayerMovement player =
-        other.GetComponent<PlayerMovement>();
-        player.DisableMovement();
+        yield return StartCoroutine(ScreenFader.Instance.FadeOut(0.3f));
+        SceneManager.LoadScene("BattleScene",LoadSceneMode.Additive);
     }
 
     public void StartCooldown()

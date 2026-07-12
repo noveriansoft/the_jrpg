@@ -41,8 +41,28 @@ public class BattleManager : MonoBehaviour
 
     private bool playerTurn = true;
 
+    [Header("Camera")]
+    public Camera battleCamera;
+    [SerializeField] private Vector3 originalCameraPos;
+
     void Start()
     {
+        #region Camera
+        Camera[] cameras = FindObjectsByType<Camera>(FindObjectsSortMode.None);
+        foreach (Camera cam in cameras)
+        {
+            if (cam.gameObject.scene.name == "WorldScene")
+            {
+                battleCamera = cam;
+                break;
+            }
+        }
+        originalCameraPos = battleCamera.transform.position;
+        Debug.Log("Camera = " + battleCamera.name + originalCameraPos);
+
+        Camera.main.transform.position = new Vector3(0f,0f,Camera.main.transform.position.z);
+        #endregion
+
         EnemyManager.Instance.StopAllEnemies();
         attackEffect.SetActive(false);
 
@@ -74,7 +94,8 @@ public class BattleManager : MonoBehaviour
         #endregion
 
         UpdateUI();
-        StartCoroutine(TypeBattleLog("A wild " + enemy.enemyName + " appeared!",OnIntroFinished));
+        StartCoroutine(ScreenFader.Instance.FadeIn(0.3f));
+        StartCoroutine(TypeBattleLog("A wild " + enemy.enemyName + " appeared!",OnIntroFinished));       
     }
 
     void UpdateUI()
@@ -85,8 +106,8 @@ public class BattleManager : MonoBehaviour
         playerHpText.text = playerCurrentHP + "/" + player.maxHP; //player.playerName; + "\nHP: " + playerCurrentHP + "/" + player.maxHP;     
         playerHpBar.value = playerCurrentHP;
 
-        Debug.Log("Player HP: " + playerCurrentHP);
-        Debug.Log("Enemy HP: " + currentHP);
+        //Debug.Log("Player HP: " + playerCurrentHP);
+        //Debug.Log("Enemy HP: " + currentHP);
     }
 
     #region Battle Log
@@ -173,41 +194,34 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(EnemyTurn());
     }
 
-    public void Run()
-    {
-        //UnityEngine.SceneManagement.SceneManager.LoadScene("WorldScene");
-        BattleData.CurrentEnemyWorld.StartCooldown();
-        ExitBattle();
-    }
-
-    void WinBattle()
-    {
-        Debug.Log("Player Win!");
-        Debug.Log("Enemy HP when win = " + currentHP);
-
-        playerTurn = false;
-        battleMenu.attackButton.interactable = false;
-        battleMenu.runButton.interactable = false;
-
-        StartCoroutine(WinBattleSequence());
-    }
-
-    void ExitBattle()
-    {
-        PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
-
-        player.EnableMovement();
-
-        SceneManager.UnloadSceneAsync("BattleScene");
-
-        EnemyManager.Instance.ResumeAllEnemies();
-    }
-
     IEnumerator EnemyTurn()
     {
         yield return new WaitForSeconds(1f);
 
-        EnemyAttack();
+        //EnemyAttack();
+        yield return StartCoroutine(EnemyAttacks());
+    }
+
+    IEnumerator EnemyAttacks()
+    {
+        Debug.Log("Enemies Attacking!");        
+        int damage = enemy.attack;
+
+        playerCurrentHP -= damage;
+        BattleData.PlayerCurrentHP = playerCurrentHP;
+        SetBattleLog(enemy.enemyName + " attacked " + player.playerName + "!\n" + player.playerName + " lost " + damage + " HP!");
+        yield return StartCoroutine(ShakeCamera(0.4f, 0.2f));
+
+        if (playerCurrentHP <= 0)
+        {
+            playerCurrentHP = 0;
+            UpdateUI();
+            LoseBattle();
+            yield break;
+        }
+
+        UpdateUI();
+        playerTurn = true;
     }
 
     void EnemyAttack()
@@ -231,10 +245,123 @@ public class BattleManager : MonoBehaviour
         playerTurn = true;
     }
 
+    IEnumerator ShakeCamera(float duration, float strength)
+    {
+        Transform cam = battleCamera.transform;
+        Vector3 originalPos = cam.position;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float x = Random.Range(-strength, strength);
+            //float y = Random.Range(-strength, strength);
+            cam.position = originalPos + new Vector3(x, 0);
+
+            yield return null;
+        }
+
+        cam.position = originalPos;
+    }
+
+    #endregion
+
+    #region Exit Battle
+    public void Run()
+    {
+        //UnityEngine.SceneManagement.SceneManager.LoadScene("WorldScene");
+        BattleData.CurrentEnemyWorld.StartCooldown();
+        //ExitBattle();
+        StartCoroutine(ExitBattleSequence(false));
+    }
+
+    void WinBattle()
+    {
+        Debug.Log("Player Win!");
+
+        playerTurn = false;
+        battleMenu.attackButton.interactable = false;
+        battleMenu.runButton.interactable = false;
+
+        //StartCoroutine(WinBattleSequence());
+
+        StartCoroutine(ExitBattleSequence(true));
+    }
+
+    void ExitBattle()
+    {
+        PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
+        player.EnableMovement();
+
+        //SceneManager.UnloadSceneAsync("BattleScene");
+        EnemyManager.Instance.ResumeAllEnemies();
+
+        //StartCoroutine(UnloadBattleScene());
+    }
+
+    IEnumerator UnloadBattleScene()
+    {
+        yield return SceneManager.UnloadSceneAsync("BattleScene");
+
+        yield return StartCoroutine(ScreenFader.Instance.FadeIn(0.5f));
+    }
+
+    IEnumerator ExitBattleSequence(bool destroyEnemy)
+    {       
+        yield return StartCoroutine(ScreenFader.Instance.FadeOut(0.5f));
+
+        if (destroyEnemy)
+        {
+            Color color = enemyImage.color;
+            while (color.a > 0)
+            {
+                color.a -= Time.deltaTime * 2f;
+                enemyImage.color = color;
+
+                yield return null;
+            }
+
+            StartCoroutine(TypeBattleLog(enemy.enemyName + " defeated!\n" +player.playerName + " wins!"));
+            float textDuration =(enemy.enemyName + " defeated!\n" + player.playerName + " wins!").Length* typeSpeed;
+
+            yield return new WaitForSeconds(textDuration + 1f);
+            Destroy(BattleData.CurrentEnemyWorld.gameObject);
+        }
+        else
+        {
+            BattleData.CurrentEnemyWorld.StartCooldown();
+        }
+
+        Camera.main.transform.position = originalCameraPos;
+        //ExitBattle();
+
+        PlayerMovement players = FindFirstObjectByType<PlayerMovement>();
+        players.EnableMovement();
+
+        EnemyManager.Instance.ResumeAllEnemies();
+        //yield return SceneManager.UnloadSceneAsync("BattleScene");
+        //yield return ScreenFader.Instance.FadeIn(0.5f);
+
+        ScreenFader.Instance.StartExitBattle(destroyEnemy,BattleData.CurrentEnemyWorld);
+    }
+
     void LoseBattle()
     {
         Debug.Log("Player Defeated");
-        ExitBattle();
+        //StartCoroutine(ExitBattleSequence(false));
+        StartCoroutine(GameOverSequence());
+    }
+
+    IEnumerator GameOverSequence()
+    {
+        playerTurn = false;
+
+        battleMenu.attackButton.interactable = false;
+        battleMenu.runButton.interactable = false;
+
+        yield return ScreenFader.Instance.FadeOut(0.5f);
+
+        SceneManager.LoadScene("GameOver");
     }
 
     IEnumerator WinBattleSequence()
@@ -262,10 +389,10 @@ public class BattleManager : MonoBehaviour
             * typeSpeed;
 
         yield return new WaitForSeconds(textDuration + 1f);
-
         Destroy(BattleData.CurrentEnemyWorld.gameObject);
 
-        ExitBattle();
+        yield return StartCoroutine(ScreenFader.Instance.FadeOut(0.5f));
+        //ExitBattle();
     }
 
     #endregion

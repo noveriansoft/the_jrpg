@@ -11,11 +11,13 @@ public class EnemyWander : MonoBehaviour
 
     public LayerMask obstacleLayer;
 
+    private SpriteRenderer spriteRenderer;
     private bool isMoving;
     private Vector3 targetPosition;
 
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         targetPosition = transform.position;
 
         StartCoroutine(WanderRoutine());
@@ -32,6 +34,9 @@ public class EnemyWander : MonoBehaviour
         {
             yield return new WaitForSeconds(moveInterval);
 
+            if (!spriteRenderer.isVisible)
+                continue;
+
             if (!canMove)
                 continue;
 
@@ -44,6 +49,9 @@ public class EnemyWander : MonoBehaviour
 
     void Update()
     {
+        if (!spriteRenderer.isVisible)
+            return;
+
         if (!canMove)
             return;
 

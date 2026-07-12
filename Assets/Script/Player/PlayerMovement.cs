@@ -7,6 +7,9 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 4f;
     public float tileSize = 1f;
 
+    private PlayerData player;
+    private int playerCurrentHP;
+
     private Animator animator;
 
     public bool isMoving;
@@ -111,6 +114,12 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Player movement disabled.");
     }
 
+    public void HealPlayer()
+    {
+        BattleData.PlayerCurrentHP = 20;
+        Debug.Log("Player healed. Current HP: " + playerCurrentHP);
+    }
+
     #region playerMoveCutscene
     public IEnumerator MoveDownCutscene(float distance)
     {
@@ -128,6 +137,37 @@ public class PlayerMovement : MonoBehaviour
         }
 
         transform.position = target;
+        isMoving = false;
+        animator.SetBool("IsMoving", false);
+    }
+
+    public IEnumerator MoveUpCutscene(float distance)
+    {
+        canMove = false;
+
+        SetFacing(0, 1);
+
+        isMoving = true;
+        animator.SetBool("IsMoving", true);
+
+        Vector3 target =
+            transform.position +
+            Vector3.up * distance;
+
+        while (Vector3.Distance(transform.position, target) > 0.01f)
+        {
+            transform.position =
+                Vector3.MoveTowards(
+                    transform.position,
+                    target,
+                    moveSpeed * Time.deltaTime
+                );
+
+            yield return null;
+        }
+
+        transform.position = target;
+
         isMoving = false;
         animator.SetBool("IsMoving", false);
     }
